@@ -1,0 +1,8 @@
+create table short_url_log(
+  id bigint not null PRIMARY KEY AUTO_INCREMENT COMMENT '自增主键',
+  src_url TEXT NOT NULL COMMENT '长url',
+  short_url VARCHAR(10) COMMENT '短url',
+  insert_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
+  update_at TIMESTAMP NOT NULL DEFAULT current_timestamp ON UPDATE current_timestamp,
+  deleted TINYINT NOT NULL DEFAULT '0' COMMENT '0未删除 1删除'
+)ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8 COMMENT='网址转换记录';

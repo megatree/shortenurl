@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.megatree.shortenurl.dao.ShortUrlDao">
+    <insert id="insertShortUrl" parameterType="net.megatree.shortenurl.model.ShortUrlLog" useGeneratedKeys="true" keyProperty="id">
+       INSERT INTO short_url_log (src_url) VALUES (#{srcUrl});
+    </insert>
+    <update id="updateShortUrlById">
+        update short_url_log
+        set short_url=#{dstUrl}
+        where id=#{id}
+    </update>
+
+    <select id="selectShortUrlById" resultMap="LogMapping">
+        select * from short_url_log where id = #{id} limit 1;
+    </select>
+    <select id="selectShortUrlByDstUrl" resultMap="LogMapping">
+        SELECT * from short_url_log where dst_url = #{dst} limit 1;
+    </select>
+
+    <resultMap id="LogMapping" type="net.megatree.shortenurl.model.ShortUrlLog">
+        <id column="id" property="id" javaType="java.lang.Long"/>
+        <result column="src_url" property="srcUrl" javaType="java.lang.String"/>
+        <result column="short_url" property="dstUrl" javaType="java.lang.String"/>
+        <result column="insert_at" property="insertAt" javaType="java.sql.Timestamp"/>
+        <result column="update_at" property="updateAt" javaType="java.sql.Timestamp"/>
+        <result column="deleted" property="deleted" javaType="int"/>
+    </resultMap>
+</mapper>

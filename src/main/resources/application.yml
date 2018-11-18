@@ -1,0 +1,12 @@
+server:
+  port: 7001
+
+spring:
+  profiles:
+    active: dev
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: net.megatree.shortenurl.model
+
