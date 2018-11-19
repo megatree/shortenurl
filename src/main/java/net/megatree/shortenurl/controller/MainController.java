@@ -41,14 +41,35 @@ public class MainController {
 
     }
 
-    @GetMapping("/index")
-    public String main(Model model) {
-        model.addAttribute("dto",new OperateDTO());
+    @RequestMapping(value = "/index", method = {RequestMethod.POST, RequestMethod.GET})
+    public String main(@ModelAttribute OperateDTO operateDTO, Model model, HttpServletRequest request) {
+        IndexPageVO vo = new IndexPageVO();
+
+        if (StringUtils.isBlank(operateDTO.getLongUrl())) {
+            model.addAttribute("dto", new OperateDTO());
+            model.addAttribute("vo", vo);
+            return "index";
+        }
+
+        ShortUrlLog log = operateService.generateShortUrl(operateDTO);
+
+        String shortUrl = new StringBuilder().append(request.getScheme())
+                .append("://").append(request.getServerName())
+                .append(":").append(request.getServerPort())
+                .append("/").append(log.getDstUrl()).toString();
+
+        vo.setLongUrl(log.getSrcUrl());
+        vo.setShortUrl(shortUrl);
+        vo.setEffectTime(log.getUpdateAt());
+
+        model.addAttribute("dto", operateDTO);
+        model.addAttribute("vo", vo);
+
         return "index";
     }
 
     @PostMapping("/query")
-    public String query(@ModelAttribute OperateDTO operateDTO,Model model,HttpServletRequest request) {
+    public String query(@ModelAttribute OperateDTO operateDTO, Model model, HttpServletRequest request) {
         Asserts.to(StringUtils.isNotBlank(operateDTO.getLongUrl()), "长地址不能为空");
         ShortUrlLog log = operateService.generateShortUrl(operateDTO);
 
@@ -57,9 +78,9 @@ public class MainController {
                 .append(":").append(request.getServerPort())
                 .append("/").append(log.getDstUrl()).toString();
 
-        model.addAttribute("dto",operateDTO);
-        model.addAttribute("shortUrl",shortUrl);
-        model.addAttribute("time",log.getUpdateAt());
+        model.addAttribute("dto", operateDTO);
+        model.addAttribute("shortUrl", shortUrl);
+        model.addAttribute("time", log.getUpdateAt());
         return "index";
     }
 

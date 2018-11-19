@@ -5,16 +5,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<form action="#" th:action="@{/opt/query}" th:object="${dto}" method="post">
-    <p>Src Url<input type="text" th:field="*{longUrl}"/></p>
+<form action="#" th:action="@{/opt/index}" th:object="${dto}" method="post">
+    <p>Src Url<input type="text" th:field="*{longUrl}" value=""/></p>
     <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
 </form>
 <div>
     <p>Dst Url:</p>
-    <a th:text="${shortUrl}"></a>
+    <a th:text="${vo.getShortUrl()}" th:href="${vo.getShortUrl()}"></a>
     <br/>
     <p>Effect Time:</p>
-    <a th:text="${time}"></a>
+    <a th:text="${vo.getEffectTime()}"></a>
 </div>
 
 </body>
