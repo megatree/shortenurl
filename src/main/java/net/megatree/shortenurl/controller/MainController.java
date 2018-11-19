@@ -21,42 +21,30 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @Slf4j
-@RequestMapping("/opt")
+@RequestMapping("/a")
 public class MainController {
 
     @Autowired
     OperateService operateService;
 
-    @PostMapping("/test")
-    @ResponseBody
-    public String test(@RequestBody OperateDTO operateDTO, HttpServletRequest request) {
-        Asserts.to(StringUtils.isNotBlank(operateDTO.getLongUrl()), "长地址不能为空");
-        ShortUrlLog log = operateService.generateShortUrl(operateDTO);
-        //todo 根据信息渲染view
-
-        return new StringBuilder().append(request.getScheme())
-                .append("://").append(request.getServerName())
-                .append(":").append(request.getServerPort())
-                .append("/").append(log.getDstUrl()).toString();
-
-    }
-
     @RequestMapping(value = "/index", method = {RequestMethod.POST, RequestMethod.GET})
     public String main(@ModelAttribute OperateDTO operateDTO, Model model, HttpServletRequest request) {
+        //vo
         IndexPageVO vo = new IndexPageVO();
 
+        //首次访问页面
         if (StringUtils.isBlank(operateDTO.getLongUrl())) {
             model.addAttribute("dto", new OperateDTO());
             model.addAttribute("vo", vo);
             return "index";
         }
 
+        //拦截器已验证longUrl合法
         ShortUrlLog log = operateService.generateShortUrl(operateDTO);
-
-        String shortUrl = new StringBuilder().append(request.getScheme())
-                .append("://").append(request.getServerName())
-                .append(":").append(request.getServerPort())
-                .append("/").append(log.getDstUrl()).toString();
+        String shortUrl = request.getScheme() +
+                "://" + request.getServerName() +
+                ":" + request.getServerPort() +
+                "/" + log.getDstUrl();
 
         vo.setLongUrl(log.getSrcUrl());
         vo.setShortUrl(shortUrl);
@@ -68,21 +56,10 @@ public class MainController {
         return "index";
     }
 
-    @PostMapping("/query")
-    public String query(@ModelAttribute OperateDTO operateDTO, Model model, HttpServletRequest request) {
-        Asserts.to(StringUtils.isNotBlank(operateDTO.getLongUrl()), "长地址不能为空");
-        ShortUrlLog log = operateService.generateShortUrl(operateDTO);
 
-        String shortUrl = new StringBuilder().append(request.getScheme())
-                .append("://").append(request.getServerName())
-                .append(":").append(request.getServerPort())
-                .append("/").append(log.getDstUrl()).toString();
-
-        model.addAttribute("dto", operateDTO);
-        model.addAttribute("shortUrl", shortUrl);
-        model.addAttribute("time", log.getUpdateAt());
-        return "index";
+    @RequestMapping(value = "/ban", method = {RequestMethod.POST, RequestMethod.GET})
+    public String ban() {
+        return "ban";
     }
-
 
 }

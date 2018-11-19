@@ -24,12 +24,13 @@ public class ShortenUrlController {
 
     @GetMapping(path = "/{path}")
     public String test(@PathVariable("path") String shortPath, HttpServletResponse httpServletResponse) {
-        Asserts.to(Encrypt.isValid(shortPath), "路径不合法");
+        Asserts.to(Encrypt.isValid(shortPath), "短网址不合法");
 
         httpServletResponse.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
         String url = operateService.getLongUrlByShort(shortPath);
         return "redirect:"+url;
 
     }
+
 
 }

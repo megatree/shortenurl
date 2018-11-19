@@ -1,20 +1,18 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Handling Form Submission</title>
+    <title>短网址</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
-<form action="#" th:action="@{/opt/index}" th:object="${dto}" method="post">
-    <p>Src Url<input type="text" th:field="*{longUrl}" value=""/></p>
-    <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
+<form action="#" th:action="@{/a/index}" th:object="${dto}" method="post">
+    <p>原地址：<input type="text" th:field="*{longUrl}" value=""/></p>
+    <p><input type="submit" value="Submit"/> </p>
 </form>
 <div>
-    <p>Dst Url:</p>
-    <a th:text="${vo.getShortUrl()}" th:href="${vo.getShortUrl()}"></a>
-    <br/>
-    <p>Effect Time:</p>
-    <a th:text="${vo.getEffectTime()}"></a>
+    <p>短地址：<a th:text="${vo.getShortUrl()}" th:href="${vo.getShortUrl()}"></a></p>
+    <p>生效时间：<a th:text="${vo.getEffectTime()}"></a></p>
+
 </div>
 
 </body>
