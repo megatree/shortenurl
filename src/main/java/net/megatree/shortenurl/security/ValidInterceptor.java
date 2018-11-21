@@ -18,32 +18,33 @@ public class ValidInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        request.setAttribute("_tip",null);
+
         //携带信息过长，ban
         //超时时间过长，ban
-        if (request.getContentLengthLong() > 4096L ) {
-            ban(response);
+        if (request.getContentLengthLong() > 4096L) {
+            badRequest(response);
             return false;
         }
 
         String longUrl = request.getParameter("longUrl");
-        if (StringUtils.isBlank(longUrl)||isValidUrl(longUrl)){
+        if (StringUtils.isBlank(longUrl) || isValidUrl(longUrl)) {
             return true;
         }
 
         //参数不合法
-        ban(response);
+        request.setAttribute("_tip","参数不合法");
+        //todo
+        response.sendRedirect("ban");
         return false;
     }
 
-    private void ban(HttpServletResponse response){
-        try {
-            response.sendRedirect("ban");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void badRequest(HttpServletResponse response) {
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 
-    private boolean isValidUrl(String urlString){
+
+    private boolean isValidUrl(String urlString) {
         URI uri = null;
         try {
             uri = new URI(urlString);
@@ -52,10 +53,10 @@ public class ValidInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
 
-        if(uri.getHost() == null){
+        if (uri.getHost() == null) {
             return false;
         }
-        if(uri.getScheme().equalsIgnoreCase("http") || uri.getScheme().equalsIgnoreCase("https")){
+        if (uri.getScheme().equalsIgnoreCase("http") || uri.getScheme().equalsIgnoreCase("https")) {
             return true;
         }
         return false;
